@@ -3,6 +3,8 @@ const { Sequelize } = require('sequelize');
 
 //Routers
 const {usersRouter} = require('./routes/users.routes')
+//utils
+const { db } = require('./utils/database')
 //Init express app
 const app = express();
 
@@ -11,25 +13,19 @@ app.use(express.json())
 
 //Endpoints
 //http://Localhost:4000/api/v1/users
-app.use('/api/v1/', usersRouter);
+app.use('/api/v1/users', usersRouter);
 
 // app.get('/posts', (req, res)=>{
 //     res.status(200).json({ posts });
 // });
 
-//Conection db 
-const db = new Sequelize({
-    dialect: 'postgres',
-    host: 'localhost',
-    username: 'postgres',
-    password: '123',
-    database: 'blogs'
-});
-
 db.authenticate()
-.then(() => console.log('Database aunthenticated'))
-.catch(err => console.log(err));
+    .then(() => console.log('Database aunthenticated'))
+    .catch(err => console.log(err));
 
+db.sync()
+    .then(() => console.log('Database synced'))
+    .catch(() => console.log(err));
 //Spin up server
 const PORT = 4000;
 
